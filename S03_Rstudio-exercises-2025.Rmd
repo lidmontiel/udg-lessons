@@ -1,0 +1,977 @@
+---
+title: "Introduction to R"
+author: "Pablo Sanchez & Lidia Montiel"
+date: "01/10/2025"
+output:
+  html_document:
+    highlight: tango
+    number_sections: no
+    theme: united
+    toc: yes
+    toc_depth: 3
+  pdf_document:
+    toc: yes
+    toc_depth: '3'
+---
+
+# Introduction
+
+This is an R markdown file that will guide you in your first steps in R. There's some text with a short explanation of each concept, and then there are R markdown **"chunks" (blocks of code)** with examples that you need to run to see the results. To run a chunk put the cursor in somewhere in the code block and press `Command + Shift + Enter` in Mac, `Ctrl + Shift + Enter` in Windows. If you want to run the chunk line by line, put the cursor in the line, press `Command + Enter` or `Ctrl + Enter` and move to the next line. The result of running each chunk will be showed in the markdown editor of Rstudio, but also in the `console` pane.
+
+RMarkdown chunks will be evaluated.
+
+## R markdown
+
+Data analysts tend to write a lot of reports, describing their analyses and results, for their collaborators or to document their work for future reference.
+
+Many new users begin by first writing a single R script containing all of the work. Then simply share the analysis by emailing the script and various graphs as attachments. But this can be cumbersome, requiring a lengthy discussion to explain which attachment was which result.
+
+Creating a web page (as an html file) by using R Markdown makes things easier. The report can be one long stream, so tall figures that wouldn't ordinary fit on one page can be kept full size and easier to read, since the reader can simply keep scrolling. Formatting is simple and easy to modify, allowing you to spend more time on your analyses instead of writing reports.
+
+### R markdown chunks
+
+There are a variety of options to affect how the code chunks are treated. Here are some examples:
+
+-   Use `echo=FALSE` to avoid having the code itself shown.\
+-   Use `results="hide"` to avoid having any results printed.\
+-   Use `eval=FALSE` to have the code shown but not evaluated.\
+-   Use `warning=FALSE` and `message=FALSE` to hide any warnings or messages produced.\
+-   Use `fig.height` and `fig.width` to control the size of the figures produced (in inches).
+
+So you might write:
+
+```{r echo=FALSE, message=FALSE}
+library("dplyr")
+library("ggplot2")
+```
+
+Often there will be particular options that you'll want to use repeatedly; for this, you can set global chunk options, like so:
+
+```{r}
+#knitr::opts_chunk$set(echo = FALSE)
+# writing a hash symbol (#) before your code creates a comment like this line
+```
+
+In this document there are some chunks that are presented as unsolved exercises for you to think a bit and try them by yourself, while you learn (or refresh) some basic R language concepts. **These exercises are going to be evaluated!**
+
+If you need any help with a built-in command or function, you can go to the `Files, Plots, Packages, Help, Viewer` pane and under the `Help` tab you can search for help. Alternatively, go to the `console` pane and type `?command_name`. Help will appear in the `Help` tab.
+
+## Navigation
+
+First things first. When you open an R markdown file, your working directory will be the one where the file was. Try it with `getwd()` that means get working directory.
+
+```{r}
+getwd()
+```
+
+If you want to organise your working directory with sub-directories, you'll need to specify the relative paths to the directories and files you want to import or write.
+
+You can also set a working directory with `setwd("/path/to/your/wd")`. By default, the working directory will be the one this file resides in.
+
+It's advisable that you always use relative paths within the project directory. This way if you share your code and data it can be run again in anybody's computer.
+
+## Basic data types in R
+
+### Simple variables
+
+Simple variables: variables that have a **numeric** value, a **character** value (such as a string), or a **logical** value (`TRUE` or `FALSE`). Examples of numeric values. To assign a variable you have to write the name of the variable (your container) the operator `<-` and the value that you want your variable to have
+
+```{r}
+# assign number 150 to variable a
+a <- 150
+a
+```
+
+**EXERCISE 1 and 2**. Now try these:
+
+```{r}
+# Assign value -1 to variable b and print it below
+
+
+
+
+
+
+# assign a number in scientific format to variable c (i.e. 3e2) and print it below
+
+
+
+
+
+
+```
+
+Variables can be also characters or strings of characters
+
+```{r}
+# Assign value "Rstudio" to variable "program"
+program <- "Rstudio"
+program
+# Notice the quotes!
+```
+
+**EXERCISE 3**. Now your turn:
+
+```{r}
+# Assign the string "Hello world!" to variable hello
+
+
+
+
+
+
+
+```
+
+Variables can have logical values (true or false)
+
+```{r}
+# assign logical value TRUE to variable is_bioinformatics_fun
+is_bioinformatics_fun <- TRUE
+is_bioinformatics_fun
+# Notice that there are no quotes here an TRUE is all caps
+```
+
+**EXERCISE 4**. Your turn:
+
+```{r}
+# assign logical value FALSE to variable am_I_bored and print the result
+am_I_bored=TRUE
+
+
+
+
+
+```
+
+Logical values can be the result of logical operations
+
+```{r}
+age <- 20
+is_adult <- age > 18
+is_adult
+```
+
+There's a function to check the type of your variable
+
+```{r}
+# check what type of variable am_I_bored is:
+class(am_I_bored)
+```
+
+You can check if a variable belongs to a specific class with
+
+```{r}
+is.numeric(a)
+is.numeric(hello)
+is.character(hello)
+```
+
+**EXERCISE 5**
+
+```{r}
+# Check if variable is_adult is specifically from logical class
+
+
+
+
+
+
+```
+
+### Vectors
+
+A vector is a combination of multiple values (numeric, character or logical) in the same object. A vector is created using the function `c()` (for concatenate).
+
+```{r}
+friend_ages <- c(21, 27, 26, 32)
+friend_ages
+```
+
+```{r}
+friend_names <- c("Marta", "Emma", "Anna", "Coral")
+friend_names
+```
+
+One can give names to the elements of a vector manually:
+
+```{r}
+names(friend_ages) <- c("Marta", "Emma", "Anna", "Coral")
+friend_ages
+```
+
+Or passing a vector with the same number of elements to function `names()`:
+
+```{r}
+# assign names to a vector using another vector
+names(friend_ages) <- friend_names
+friend_ages
+```
+
+Or one may create a vector with named elements from scratch:
+
+```{r}
+friend_ages <- c(Marta=21, Emma=27, Anna=26, Coral=32)
+friend_ages
+```
+
+To find out the length of a vector:
+
+```{r}
+length(friend_ages)
+```
+
+To access elements of a vector: by index, or by name if it is a named vector. Notice that in R, indexes start from '1', whereas in other languages may start from '0' (i.e. perl or python).
+
+```{r}
+friend_ages[3]
+```
+
+```{r}
+friend_ages["Emma"]
+```
+
+You can give a vector of indexes as index:
+
+```{r}
+friend_ages[c("Marta", "Anna")]
+```
+
+or select elements of a vector by excluding some indexes
+
+```{r}
+friend_ages[-3]
+```
+
+To select a subset of a vector can be done by logical vector.
+
+```{r}
+# first let's create a vector with my friends
+my_friends <- c("Marta", "Emma", "Anna", "Coral")
+my_friends
+```
+
+And another vector, of class logical, with the same dimensions that specifies if they have children or not
+
+```{r}
+has_child <- c("TRUE", "TRUE", "FALSE", "TRUE")
+has_child
+```
+
+And now select the subset of my friends who have children:
+
+```{r}
+my_friends[has_child == "TRUE"]
+```
+
+Notice that the index here was a logical test. In R we use 2 equal signs to specify that behavior. This logical tests or conditions are used in conditional structures. Try the opposite condition:
+
+**EXERCISE 6**
+
+```{r}
+# show me a list of my friends without kids by NOT using 2 equal signs in the logical test
+
+
+
+
+
+
+```
+
+In Rstudio you'll see in the `Environment` tab the names, values, types and classes of the variables that you have been creating until now. You can print them here as well with the function `ls()`.
+
+```{r}
+ls()
+```
+
+### Matrices
+
+A matrix is like and Excel sheet containing multiple rows and columns. It is used to combine vectors of the same type. First we have to define some vectors with the same dimensions
+
+```{r}
+col1 <- c(1,3,8,9)
+col2 <- c(2,18,27,10)
+col3 <- c(8,37,267,19)
+```
+
+And then build a matrix with the function `cbind` or "bind by columns"
+
+```{r}
+my_matrix <- cbind(col1, col2, col3)
+my_matrix
+```
+
+We can give rows a name with the function `rownames()`:
+
+```{r}
+rownames(my_matrix) <- c("row1", "row2", "row3", "row4")
+my_matrix
+```
+
+Or we can transpose the matrix with function `t()`
+
+**EXERCISE 7**
+
+```{r}
+my_matrix <- t(my_matrix)
+my_matrix
+# now transpose it back to keep some sense with the row and column names...
+
+
+
+
+
+
+```
+
+To find out the dimension of a matrix:
+
+```{r}
+ncol(my_matrix)
+```
+
+Or its dimensions (it works for variables and vectors too)
+
+```{r}
+dim(my_matrix)
+```
+
+Accessing elements of a matrix is done in similar ways to accessing elements of a vector.
+
+```{r}
+# The first index is the row, the second index is the column
+my_matrix[1,3]
+```
+
+**EXERCISE 8 and 9**
+
+```{r}
+# Get the value of column 2 row 2
+
+
+
+
+
+
+# Try to access an element of the matrix by using the row and column names as indexes. Don't forget the quotation marks!
+
+
+
+
+
+```
+
+If you only specify one index and a comma in the place of the other index, you'll get a vector with all the elements of that row or column:
+
+```{r}
+my_matrix[1,]
+```
+
+**EXERCISE 10**
+
+```{r}
+# Try to get all elements of col 2 of my_matrix
+
+
+
+
+
+
+```
+
+**EXERCISE 11**. You can also specify logical conditions as indexes, just as with vectors:
+
+```{r}
+# print all rows that have values larger than 20 in column 3
+
+
+
+
+
+```
+
+To do calculations with matrices:
+
+```{r}
+# Multiply a matrix by a scalar
+my_matrix * 3
+```
+
+```{r}
+# log transform a matrix
+log10(my_matrix)
+```
+
+There are built in functions that allow you to get totals for all rows or columns.
+
+```{r}
+# for rows
+rowSums(my_matrix)
+rowSums(my_matrix)/ncol(my_matrix)
+rowSums(my_matrix)/3
+```
+
+```{r}
+# for columns
+colSums(my_matrix)
+colSums(my_matrix)/nrow(my_matrix)
+```
+
+It is also possible to use the function `apply()` to apply any statistical functions to rows/columns of matrices. The advantage of using `apply()` is that it can take a function created by user.
+
+The simplified format of `apply()` is as following:
+
+`apply(X, MARGIN, FUN)`
+
+-   X: data matrix
+-   MARGIN: possible values are 1 (for rows) and 2 (for columns)
+-   FUN: the function to apply on rows/columns
+
+To calculate the mean of each row.
+
+```{r}
+apply(my_matrix, 1, mean)
+```
+
+**EXERCISE 12**. Now calculate the median of each column (function to get the median is -surprise- `median()`)
+
+```{r}
+# Median of each column of my_matrix with apply
+
+
+
+
+
+
+
+```
+
+### Factors
+
+A factor represents **categorical** or groups in data. The function `factor()` can be used to create a factor variable.
+
+```{r}
+# let's put my friends in groups 1 and 2
+friend_groups <- factor(c(1,2,1,2))
+friend_groups
+```
+
+In R, categories are called factor levels. The function `levels()` can be used to access the factor levels.
+
+```{r}
+levels(friend_groups)
+```
+
+Change the factor levels.
+
+```{r}
+levels(friend_groups) <- c("best_friend", "not_best_friend")
+friend_groups
+```
+
+If you want to know the number of individuals at each levels, there are two functions.
+
+```{r}
+summary(friend_groups)
+```
+
+or
+
+```{r}
+table(friend_groups)
+```
+
+### Data frames
+
+A data frame is like a matrix but can have columns with different types (numeric, character, logical).
+
+A data frame can be created using the function `data.frame()`.
+
+```{r}
+# creating a data frame using previously defined vectors
+friends <- data.frame(name=friend_names, age=friend_ages, child=has_child)
+friends
+```
+
+To check whether a data is a data frame, use the function `is.data.frame()`.
+
+```{r}
+is.data.frame(friends)
+```
+
+**EXERCISE 13**. The object `my_matrix` is a data frame?
+
+```{r}
+# Try it here
+
+
+
+
+
+
+```
+
+**EXERCISE 14**. One can convert an object to data frame with the function `as.data.frame()`
+
+```{r}
+# create a new variable called my_data coercing my_matrix to a data frame
+
+
+
+
+
+
+class(my_data)
+```
+
+**EXERCISE 15**. A data frame can be transposed in the similar way as a matrix.
+
+```{r}
+# see how my_data looks like
+my_data
+
+
+# Now try and remember how to transpose it here
+
+
+
+
+
+
+
+```
+
+To obtain a subset of a data frame can be done in similar ways as we have discussed: by index, by row/column names, or by logical values.
+
+```{r}
+friends["Marta",]
+```
+
+**EXERCISE 16**
+
+```{r}
+# subset the data frame to show the child column here
+
+
+
+
+
+
+```
+
+The columns of a data frame can be referred to by the names of the columns. The syntax involves calling the data frame name, followed by a `$` and the name of the column
+
+```{r}
+friends$age
+```
+
+You can do logical tests too to extract subsets that fulfill a particular condition
+
+```{r}
+friends[friends$age > 26,]
+```
+
+**EXERCISE 17**
+
+```{r}
+# Try to subset the data frame with all my friends with a child here
+
+
+
+
+
+
+
+```
+
+Function `subset()` can also be used to get a subset of a data frame.
+
+```{r}
+# Here the syntax involves the argument 'select'
+subset(friends, select=age)
+```
+
+A data frame can be extended.
+
+```{r}
+# add a column that has the information on the marrital status of friends
+friends$married <- c("YES", "YES", "NO", "YES")
+friends
+```
+
+A data frame can also be extended using the functions `cbind()` and `rbind()`, just like with matrices.
+
+```{r}
+# add a column that has the information on the salaries of friends
+cbind(friends, salary=c(4000, 8000, 2000, 6000))
+```
+
+We now know how to add rows and columns to our data frame in R, but if we want to delete them, we can just use
+
+```{r}
+# delete 3rd row of data frame friends
+friends[-3,]
+```
+
+**EXERCISE 18**. Now try the following: Make a data frame that holds the following information for yourself:
+
+    first name
+    last name
+    lucky number
+
+This will be just one row and three columns.
+
+```{r}
+
+
+
+
+
+
+
+```
+
+**EXERCISE 19**. Then use `rbind` to add an entry for the people sitting beside you. Finally, use `cbind` to add a column with each person's answer to the question, "Is it time for coffee break?"
+
+```{r}
+
+
+
+
+
+
+
+```
+
+### Lists
+
+A list is an ordered collection of objects, which can be any type of R objects (vectors, matrices, data frames). A list can be created using the function `list()`.
+
+```{r}
+my_list <- list(mother="Joana", father="Mateu", sisters=c("Laura", "Aina"), sister_age=c(5, 10))
+my_list
+```
+
+This list has 4 elements, 2 character variables, and 2 vectors (one class character and another one numeric). Each element has a name:
+
+```{r}
+# names of elements in the list
+names(my_list)
+```
+
+And you can know the number of elements in a list with function `length()`
+
+```{r}
+# number of elements in the list
+length(my_list)
+```
+
+To access elements of a list can be done using its name or index.
+
+```{r}
+# by name
+my_list$mother
+```
+
+```{r}
+# by name also. Notice that we need to specify double square brackets!
+my_list[["mother"]]
+```
+
+```{r}
+# by index
+my_list[[1]]
+```
+
+**EXERCISE 20 and 21**. Try yourself
+
+```{r}
+# Get your sisters' names using the index syntax
+
+
+
+
+
+
+```
+
+```{r}
+# Could you be able to get print the name of Emma (your second sister) by accessing the list with indexes? Hint: It's the second element of the third element in your list
+
+
+
+
+
+
+
+```
+
+## Importing and exporting data in R
+
+### Importing data
+
+You are not going to build your data frames or matrices within R. You mostly will like to make them in excel, exporting them as a `.csv` file (comma-separated values), `.txt` or `.tsv` (tab separated values), and importing them to R.
+
+R base function `read.table()` is a general function that can be used to read a file in table format. The data will be imported as a data frame by default.
+
+Get the file `01_raw-counts.txt` from the moodle website and put it in the same directory where you are working now. Open it in a text editor (notepad, textEdit), and check whether this is a tab-separated text file or not.
+
+```{r}
+# Use the following command to read the file. Try to understand it first and if you don't, use ?read.table in the console pane to see what these options are
+data <- read.table(file="01_raw-counts.txt", sep="\t", header=T, stringsAsFactors=F)
+```
+
+Now, take a look at the beginning part of the data frame
+
+```{r}
+# Function head() works very similarly to the command head in the Shell.
+head(data)
+```
+
+Depending on the format of the file, several variants of `read.table()` are available to make reading a file easier. For instance, `read.csv()` makes reading *comma-separated value* files (`.csv`) easier.
+
+Download `02_raw-counts.csv` from the moodle website and put it in the same directory where you are working now. Open it in a text editor (notepad, textEdit), and check whether this is a comma-separated text file or not.
+
+```{r}
+# Notice the fewer options that we need to use, as they are defaults for this function
+data2 <- read.csv(file="02_raw-counts.csv", stringsAsFactors=F)
+```
+
+```{r}
+# To look at the file:
+head(data2)
+```
+
+### Exporting data
+
+When you have modified or created a data, or results, table that you want to save (as final output, intermediate analysis checkpoint, ...) you need a way to do it. R base function `write.table()` can be used to export a data frame or matrix to a file.
+
+```{r}
+# To write to a file called "output.txt" in your current working directory.
+write.table(data2[1:20,], file="output.txt", sep="\t", quote=F, row.names=T, col.names=T)
+```
+
+Notice that in the previous example we have given a range of numbers to the column index by specifying 2 values separated by `:`. It's also possible to export `.csv` files directly with `write.csv()`.
+
+## Basic statistics in R
+
+Here there's a list of several built-in statistics functions in R
+
+| Description                          | R_function |
+|--------------------------------------|------------|
+| Mean                                 | mean()     |
+| Standard deviation                   | sd()       |
+| Variance                             | var()      |
+| Minimum                              | min()      |
+| Maximum                              | max()      |
+| Median                               | median()   |
+| Range of values: minimum and maximum | range()    |
+| Sample quantiles                     | quantile() |
+| Generic function                     | summary()  |
+| Interquartile range                  | IQR()      |
+
+We can recover the `apply()` function from before (do `?apply` if you need help) and calculate a few things from the data.
+
+Calculate the mean
+
+```{r}
+apply(data, 2, mean)
+```
+
+Calculate the quantiles of each sample
+
+```{r}
+apply(data, 2, quantile)
+```
+
+**EXERCISE 22**. Now try to get the maximum value of each sample
+
+```{r}
+# Your code here
+
+
+
+
+
+
+
+
+```
+
+## Simple data visulization in R
+
+R is known by its high quality, publication-ready graphics. These are produced by code, so it's easy to repeat them and generate various filetypes.
+
+Scatter plot can be produced using the function `plot()`.
+
+```{r}
+# We create a vector using a range, then another vector product of applying an expression to the first one (they'll have the same dimensions), and we plot that with plot()
+x <- c(1:50)
+y <- 1 + sqrt(x)/2
+plot(x,y)
+```
+
+We can do different types of plots, like boxplots with `boxplot()`, that can be used to summarize expression data.
+
+```{r}
+# Going back to the data data frame, with counts per sample:
+boxplot(data, xlab="Sample ID", ylab="Raw Counts")
+```
+
+Build a normal distribution with a set of 1000 elements and plot the boxplot
+
+```{r}
+x <- rnorm(1000)
+boxplot(x)
+```
+
+### ggplot2
+
+ggplot2 is an awesome package to produce high quality graphics. If you don't have it already, install it with `install.packages("ggplot2")` in the console pane. Then load it in your session:
+
+```{r}
+library(ggplot2)
+```
+
+#### Scatterplots with ggplot2
+
+Let's look at how to create a scatterplot in ggplot2. We'll use the classic dataset [iris](https://en.wikipedia.org/wiki/Iris_flower_data_set) data frame that's automatically loaded into R.
+
+What does the data frame contain? We can use the head function to look at the first few rows.
+
+```{r}
+head(iris) # by default, head displays the first 6 rows. see `?head`
+head(iris, n = 10) # we can also explicitly set the number of rows to display
+```
+
+The data frame actually contains three types of species: setosa, versicolor, and virginica.
+
+Let's plot `Sepal.Length` against `Petal.Length` using ggplot2's `qplot()` function. ggplot has a particular syntax. It's explained in the examples, but it can get wildly complicated...
+
+```{r}
+qplot(Sepal.Length, Petal.Length, data = iris)
+# Plot Sepal.Length vs. Petal.Length, using data from the `iris` data frame.
+# * First argument `Sepal.Length` goes on the x-axis.
+# * Second argument `Petal.Length` goes on the y-axis.
+# * `data = iris` means to look for this data in the `iris` data frame.    
+```
+
+To see where each species is located in this graph, we can color each point by adding a `color = Species` argument.
+
+```{r}
+qplot(Sepal.Length, Petal.Length, data = iris, color = Species)
+```
+
+Similarly, we can let the size of each point denote petal width, by adding a `size = Petal.Width` argument.
+
+```{r}
+qplot(Sepal.Length, Petal.Length, data = iris, color = Species, size = Petal.Width)
+# We see that Iris setosa flowers have the narrowest petals.
+```
+
+Let's tweak a bit more the look of the plot, because all dots overlap
+
+```{r}
+qplot(Sepal.Length, Petal.Length, data = iris, color = Species, size = Petal.Width, alpha = I(0.7))
+# By setting the alpha of each point to 0.7, we reduce the effects of overplotting.
+```
+
+Finally, let's fix the axis labels and add a title to the plot.
+
+```{r}
+qplot(Sepal.Length, Petal.Length, data = iris, color = Species, size = Petal.Width, alpha = I(0.7),
+    xlab = "Sepal Length", ylab = "Petal Length", 
+    main = "Sepal vs. Petal Length in Fisher's Iris data")
+```
+
+This is just a small preview of what ggplot2 can do!
+
+## Installing packages in R
+
+### Regular packages
+
+If packages are available at the repositories of r-cran, is as simple as
+
+    install.packages("package-name")
+
+This is better if you do it in the `console` pane, not in the markdown document.
+
+Loading packages is easy, just call
+
+    library(package-name)
+
+It's a good practice to load the packages in the beginning of your script, so as you know if you have a complete environment just when you start working.
+
+### Bioconductor packages
+
+Bioconductor is an open source, open development software project to provide tools for the analysis and comprehension of high-throughput genomic data. It is based primarily on the R programming language.
+
+Activate the installer from bioconductor and get the latest version of bioconductor
+
+    ## try http:// if https:// URLs are not supported
+    if (!requireNamespace("BiocManager", quietly = TRUE))
+        install.packages("BiocManager")
+    BiocManager::install() # add the name of the package between brackets
+
+```{r}
+## install specific packages (NOT THIS WAY ANYMORE!)
+#biocLite("edgeR") 
+#biocLite(c("topGO", "org.At.tair.db", "biomaRt", "KEGGREST", "WGCNA", "Rgraphviz", "gplots", "devtools"))
+
+## biocLite is no longer available for R versions > 3.5.0
+## the current correct way:
+#BiocManager::install("edgeR") 
+#BiocManager::install(c("topGO", "org.At.tair.db", "biomaRt", "KEGGREST", "WGCNA", "Rgraphviz", "gplots", "devtools"))
+
+## this is the new way to install Bioconductor and related specific packages
+```
+
+**EXERCISE 23**. Try to install package `DESeq2` from bioconductor.
+
+```{r}
+
+
+
+
+
+
+
+
+```
+
+### To-do at home
+
+**EXERCISE 24**. Apply what you've learned so far. Enter the data found in Table 1 into R by hand and do some basic data subsets. Follow each point and write your code in one chunk. Questions must be answered and remember to use `#`!
+
+Table 1
+
+| Lake   | Area | Time | Fish |
+|--------|------|------|------|
+| Big    | 100  | 1000 | 643  |
+| Small  | 25   | 1200 | 203  |
+| Square | 45   | 1400 | 109  |
+| Circle | 30   | 1600 | 15   |
+
+1.  Enter these data into vectors. Should you enter the data as vectors by rows or by columns?
+2.  Combine your vectors into a data frame. Why should you use a data frame instead of a matrix?
+3.  Subset the data from Square lake.
+4.  Subset the area for all of the lakes.
+5.  Subset the number of fish for Small and Circle lakes only.
+6.  You realize that you sampled 700 fish at Big lake, not 643. Fix the mistake. There are two ways to do this, think about it and do the one you prefer most.
+7.  Calculate some basic summary statistics of your data using the `summary()` function.
+8.  Load a R dataset called "CO2" using `data()` function (you can also take a look using `head()`) and calculate the mean number of CO2 uptake for each treatment in each Type of plant using `tapply()`. *Hint: You can group by two variables with: `tapply(CO2$var, list(CO2$grp1, CO2$grp2), FUN)`*
+9.  Make a histogram of CO2 uptake for only Quebec type of plant using `hist()` function. Set `breaks = 20` so you can see the distribution more clearly. Remember to use `?function` if you need help. *Hint: remember how we extracted a subset of the previous `friends` data frame by a particular condition using the `age` group, so here you will also need to specify the group you want to plot*
+10. Change the main title and the x label to reflect what they mean. Also, change the x-axis limit to be 0 to 50. Remember help function!
+
+```{r}
+
+
+
+
+
+
+
+
+
+
+```
